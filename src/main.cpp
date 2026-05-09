@@ -79,8 +79,8 @@ void initAccelInterruptPin() {
   // set pin 2 as input, which is PA4
   PORTA.DIRCLR = PIN4_bm;
 
-  //PORTA.PIN4CTRL = PORT_PULLUPEN_bm | PORT_ISC_BOTHEDGES_gc;
-  PORTA.PIN4CTRL = PORT_ISC_FALLING_gc;
+  PORTA.PIN4CTRL = 0x11;
+  //PORTA.PIN4CTRL = PORT_ISC_FALLING_gc;
 }
 
 bool verifyAccelConnection() {
@@ -203,8 +203,9 @@ void loop() {
  * the int pin from the device being connected to a port b pin
  * */ 
 ISR(PORTA_PORT_vect) {
-
-  PORTA.INTFLAGS |= PIN4_bm;
+  Serial.println("ISR");
+  Serial.flush();
+  PORTA.INTFLAGS = 0x10;
 
   mcu_state = FALL_DETECTED;
 }
