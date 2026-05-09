@@ -79,8 +79,7 @@ void initAccelInterruptPin() {
   // set pin 2 as input, which is PA4
   PORTA.DIRCLR = PIN4_bm;
 
-  PORTA.PIN4CTRL = 0x11;
-  //PORTA.PIN4CTRL = PORT_ISC_FALLING_gc;
+  PORTA.PIN4CTRL = PORT_PULLUPEN_bm | PORT_ISC_FALLING_gc;
 }
 
 bool verifyAccelConnection() {
@@ -141,7 +140,7 @@ void scanBusForDevices() {
 }
 
 void setup() {
-  initMCUClock();
+  //initMCUClock();
 
   Serial.begin(115200);
 
@@ -151,14 +150,14 @@ void setup() {
   
   delay(10000);
   
-  uint8_t deviceID = SIGROW_DEVICEID0;
-  uint8_t serialNum = SIGROW_SERNUM0;
+  // uint8_t deviceID = SIGROW_DEVICEID0;
+  // uint8_t serialNum = SIGROW_SERNUM0;
   
-  Serial.print("Device ID: 0x"); Serial.println(deviceID, HEX);
+  // Serial.print("Device ID: 0x"); Serial.println(deviceID, HEX);
 
-  Serial.print("Serial Num: 0x"); Serial.println(serialNum, HEX);
+  // Serial.print("Serial Num: 0x"); Serial.println(serialNum, HEX);
 
-  Serial.flush();
+  // Serial.flush();
 
   Wire.begin();
 
@@ -203,9 +202,8 @@ void loop() {
  * the int pin from the device being connected to a port b pin
  * */ 
 ISR(PORTA_PORT_vect) {
-  Serial.println("ISR");
-  Serial.flush();
-  PORTA.INTFLAGS = 0x10;
+
+  PORTA.INTFLAGS |= PIN4_bm;
 
   mcu_state = FALL_DETECTED;
 }
